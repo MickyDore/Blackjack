@@ -8,20 +8,22 @@ public class Deck {
 	
 	public static ArrayList<Card> deck;
 	
+	//Constructor for a new deck of cards
 	public Deck() {
 		newDeck();
 	}
+	
 	//Method to create a new deck of 52 shuffled Card objects.
     public static void newDeck() {
         deck = new ArrayList<>();
 
-        //for every suit...
+        //For every suit...
         for (int i = 0; i < Card.Suit.values().length; i++) { 
-            //make 13 different cards.
+            //Make 13 different cards with different ranks
             for (int j = 0; j < Card.Rank.values().length; j++) { 
                 Card card = new Card(Card.Rank.values()[j],
                         Card.Suit.values()[i]);
-                deck.add(card);
+                deck.add(card); //add the card to the deck
             }
         }
         Collections.shuffle(deck); //shuffles the deck of cards.

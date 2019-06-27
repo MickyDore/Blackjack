@@ -19,7 +19,6 @@ public class RobotPlayer implements Player {
 		return hand;
 	}
 	
-	//Is the user out of playable moves.
 	public boolean isBust() {
 		return (this.hand.getTotalScore() > 21);
 	}

@@ -5,31 +5,27 @@ import java.util.ArrayList;
 public class Hand {
 	
 	private int totalHandScore = 0;
-	private int lowScoreWithAce = 0;
 	private boolean softHand = false;
+	
 	private ArrayList<Card> hand;
 	
+	//Constructor for a new hand
 	public Hand() {
 		hand = new ArrayList<>(); 
 	}
 	
+	//Adds the score of a new card to the current hand total
 	public void addToTotalScore(int score) {
 		this.totalHandScore += score;
 	}
 	
-	public void setLowAceScore(int score) {
-		this.lowScoreWithAce = score;
-	}
-	
+	//Returns the current total score of the hand
 	public int getTotalScore() {
 		return this.totalHandScore;
 	}
 	
-	public int getLowAceScore() {
-		return this.lowScoreWithAce;
-	}
-	
-	
+	//Adds a card to the hand and also adds the correct 
+	//number of points to the total hand score
 	public void addToHand(Card c) {
 		if (c.getRank() == Card.Rank.ACE) {
 			if (hasAce()) {
@@ -50,10 +46,9 @@ public class Hand {
 			totalHandScore -= 10;
 			softHand = true;
 		}
-		
 	}
 	
-	//Checks whether a hand contains an ace.
+	//Checks whether the hand contains an ace.
 	public boolean hasAce() {
 		for (Card c : hand) {
 			if (c.getRank() == Card.Rank.ACE) {
@@ -73,6 +68,7 @@ public class Hand {
 		return (this.totalHandScore == 21) && (this.hand.size() == 2);
 	}
 	
+	//Returns the hand as an ArrayList of cards
 	public ArrayList<Card> getHand() {
 		return this.hand;
 	}

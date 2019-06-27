@@ -7,28 +7,33 @@ import cards.Hand;
 
 public class Blackjack {
 	
-	public HumanPlayer h;
-	public RobotPlayer r;
-	public Dealer d;
-	public Deck newDeck;
-	public boolean playerHasMoves = true;
+	private HumanPlayer h;
+	private RobotPlayer r;
+	private Dealer d;
+	private Deck newDeck;
+	private boolean playerHasMoves = true;
 	
+	//Variables for measuring the number of wins/draws/losses 
+	//when simulating blackjack games with the RobotPlayer class.
 	static int gamesPlayed = 0;
 	static int robotWins = 0;
 	static int robotDraws = 0;
 	
+	//Instantiate objects ready to simulate an AI game of blackjack
 	public void createRobotGame() {
 		r = new RobotPlayer();
 		d = new Dealer();
 		newDeck = new Deck();
 	}
 	
+	//Instantiate objects ready to play a human game of blackjack
 	public void createHumanGame() {
 		h = new HumanPlayer();
 		d = new Dealer();
 		newDeck = new Deck();
 	}
 	
+	//Deal the first 2 cards to each player in the game
 	private void dealFirstHands(Player p, Dealer d) {
 		p.hit(newDeck.deal());
 		d.hit(newDeck.deal());
@@ -36,8 +41,8 @@ public class Blackjack {
 		d.hit(newDeck.deal());
 	}
 	
-	public void printGameState(Hand player, Hand dealer, boolean playerDone) {
-		
+	//Prints the current hands and cards in play
+	public void printGameState(Hand player, Hand dealer, boolean playerDone) {	
 		if (playerDone) {
 			System.out.println("The dealers hand:  \t" + dealer.getHand() + " -> " + dealer.getTotalScore());
 			System.out.println("Your hand:  \t\t" + player.getHand() + " -> " + player.getTotalScore() + "\n");
@@ -47,6 +52,7 @@ public class Blackjack {
 		}
 	}
 	
+	//Prints the outcome of the hand
 	public static void printEndGame(int winner) {
 		if (winner == 0) {
 			System.out.println("The Dealer wins the hand.");
@@ -57,35 +63,40 @@ public class Blackjack {
 		}
 	}
 	
-	
-	//Plays out a game of an AI player against the dealer
+	//Plays out a hand of blackjack with a human player against the dealer
 	public void playHumanGame() {
+				
+		createHumanGame();
+		dealFirstHands(h, d);
+		printGameState(h.getHand(), d.getHand(), false);
 		
-		Scanner scan = new Scanner(System.in);	
-		createHumanGame(); //Initialise the players and a deck of cards
-		dealFirstHands(h, d); //Deal 2 cards to each player
-		printGameState(h.getHand(), d.getHand(), false); //Display the cards that have been dealt
+		Scanner scan = new Scanner(System.in);
 		
+		//Begin the human player's moves
 		while (playerHasMoves && !h.isBust()) {
-			System.out.println("Press 1 to hit, or 0 to stand.");
+			System.out.println("Press 1 to hit, or any other key to stand.");
 			int move = scan.nextInt();
+			
 			if (move == 1) {
-				h.hit(newDeck.deal());
+				h.hit(newDeck.deal()); //hit
 				printGameState(h.getHand(), d.getHand(), false);
 			} else {
-				playerHasMoves = false;
+				playerHasMoves = false; //or stick
 			}		
 		}
 		scan.close();
+		
 		if (h.isBust()) {
 			printEndGame(0);
 			gamesPlayed++;
 		} else {
 			printGameState(h.getHand(), d.getHand(), true);
+			
+			//Begin the dealer's moves
 			while (d.shouldHit() && !d.isBust()) {
 				d.hit(newDeck.deal());
 				printGameState(h.getHand(), d.getHand(), true);
-			}
+			}	
 			
 			if (d.isBust()) {
 				printEndGame(2);
@@ -99,40 +110,41 @@ public class Blackjack {
 			
 	}
 	
-	//Plays out a game of an AI player against the dealer
-		public void playRobotGame() {
-			
-			createRobotGame(); //Initialise the players and a deck of cards
-			dealFirstHands(r, d); //Deal 2 cards to each player
-			printGameState(r.getHand(), d.getHand(), false); //Display the cards that have been dealt
-			
-			while (r.shouldHit() && !r.isBust()) {
-				r.hit(newDeck.deal());
-				printGameState(r.getHand(), d.getHand(), false);		
+	//Plays out a hand of blackjack with an AI player against the dealer
+	public void playRobotGame() {
+		
+		createRobotGame(); //Initialise the players and a deck of cards
+		dealFirstHands(r, d); //Deal 2 cards to each player
+		printGameState(r.getHand(), d.getHand(), false); //Display the cards that have been dealt
+		
+		while (r.shouldHit() && !r.isBust()) {
+			r.hit(newDeck.deal());
+			printGameState(r.getHand(), d.getHand(), false);		
+		}
+		
+		if (r.isBust()) {
+			printEndGame(0);
+			gamesPlayed++;
+		} else {
+			printGameState(r.getHand(), d.getHand(), true);
+			while (d.shouldHit() && !d.isBust()) {
+				d.hit(newDeck.deal());
+				printGameState(r.getHand(), d.getHand(), true);
 			}
 			
-			if (r.isBust()) {
-				printEndGame(0);
+			if (d.isBust()) {
+				printEndGame(2);
+				robotWins++;
 				gamesPlayed++;
 			} else {
-				printGameState(r.getHand(), d.getHand(), true);
-				while (d.shouldHit() && !d.isBust()) {
-					d.hit(newDeck.deal());
-					printGameState(r.getHand(), d.getHand(), true);
-				}
-				
-				if (d.isBust()) {
-					printEndGame(2);
-					robotWins++;
-					gamesPlayed++;
-				} else {
-					int winner = calculateWinner(d.getHand(), r.getHand());
-					printEndGame(winner);
-				}
+				int winner = calculateWinner(d.getHand(), r.getHand());
+				printEndGame(winner);
 			}
-				
 		}
+			
+	}
 	
+	//Calculates the winner of the hand based on both hand scores
 	public static int calculateWinner(Hand dealerHand, Hand playerHand) {
 		
 		int playerScore = playerHand.getTotalScore();

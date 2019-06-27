@@ -19,14 +19,15 @@ public class Dealer implements Player {
 		return hand;
 	}
 	
+	public boolean isBust() {
+		return (this.hand.getTotalScore() > 21);
+	}
+	
+	//Determines whether the dealer should hit or stick
 	public boolean shouldHit() {
 		if (getHand().getTotalScore() >= 17) {
 			return false;
 		}
 		return true;
-	}
-	
-	public boolean isBust() {
-		return (this.hand.getTotalScore() > 21);
 	}
 }
