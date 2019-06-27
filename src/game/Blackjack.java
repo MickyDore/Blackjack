@@ -15,9 +15,9 @@ public class Blackjack {
 	
 	//Variables for measuring the number of wins/draws/losses 
 	//when simulating blackjack games with the RobotPlayer class.
-	static int gamesPlayed = 0;
-	static int robotWins = 0;
-	static int robotDraws = 0;
+	public static int gamesPlayed = 0;
+	public static int robotWins = 0;
+	public static int robotDraws = 0;
 	
 	//Instantiate objects ready to simulate an AI game of blackjack
 	public void createRobotGame() {
@@ -117,7 +117,7 @@ public class Blackjack {
 		dealFirstHands(r, d); //Deal 2 cards to each player
 		printGameState(r.getHand(), d.getHand(), false); //Display the cards that have been dealt
 		
-		while (r.shouldHit() && !r.isBust()) {
+		while (r.shouldHit(d.getHand().getHand().get(0)) && !r.isBust()) {
 			r.hit(newDeck.deal());
 			printGameState(r.getHand(), d.getHand(), false);		
 		}

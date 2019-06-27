@@ -23,13 +23,23 @@ public class RobotPlayer implements Player {
 		return (this.hand.getTotalScore() > 21);
 	}
 	
-	public boolean shouldHit() {
+	public boolean shouldHit(Card dealersCard) {
 		
 		int handScore = getHand().getTotalScore();
+		int dealerScore = dealersCard.getRank().getValue();
+		boolean softStartingHand = (getHand().getHand().size() == 2) && getHand().hasAce();
+		
 		if (handScore >= 17) {
+			return false;
+		} else if (handScore < 17 && handScore > 11 && dealerScore < 6) {
+			return false;
+		} else if (handScore <= 11) {
+			return true;
+		} else if (softStartingHand && handScore >= 13 && handScore <= 17) {
+			return true;
+		} else {
 			return false;
 		}
 		
-		return true;
 	}
 }
